@@ -1,0 +1,32 @@
+.choose__sizes__modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    & h3 {
+        color: white;
+        text-align: center;
+    }
+    & .sizes {
+        width: 400px;
+        height: 200px;
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        box-sizing: border-box;
+        padding: 20px;
+        overflow-y: scroll;
+
+        & .size {
+            display: flex;
+            gap: 3px;
+        }
+        & input {
+            width: 170px;
+        }
+    }
+}

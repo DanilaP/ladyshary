@@ -6,7 +6,6 @@ function Characteristics(props: {uploadCharacteristics: Function}) {
 
     const [characteristics, setCharacteristics] = useState<CharacteristicType[]>([
         {title: "Страна производства", value: ""},
-        {title: "Размер", value: ""},
         {title: "Цвет", value: ""},
     ]);
 

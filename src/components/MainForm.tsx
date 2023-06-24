@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import './MainForm.scss';
 import Characteristics from './Characteristisc/Characteristics';
-import { CharacteristicType } from './Interfaces';
+import { CharacteristicType, StockInfo } from './Interfaces';
 import axios from 'axios';
+import ChooseSizesModal from './ChooseSizesModal/chooseSizeModal';
 
 function MainForm() {
     const [choosenPhotos, setChoosenPhotos] = useState<string[]>([]);
     const [productCard, setProductCard] = useState<CharacteristicType[]>([]);
-    const [baseChars, setBaseChars] = useState<any>({});
+    const [baseChars, setBaseChars] = useState<any>({categorysId: "Новинки"});
     const [categories, setCategories] = useState<any>();
     const [filesOfChoosenPhotos, setFilesOfChoosenPhotos] = useState<FileList | null>();
 
@@ -23,6 +24,9 @@ function MainForm() {
     const uploadCharacteristics = (characteristics: CharacteristicType[]) => {
         setProductCard(characteristics);
     }
+    const changeBaseChars = (newChar: StockInfo) => {
+        setBaseChars({...baseChars, stockInfo: newChar});
+    }
     const sendProdcutCard = async () => {
         let formData = new FormData;
         let newBaseChars: any = {
@@ -30,7 +34,7 @@ function MainForm() {
             title: baseChars.title,
             categorysId: categories.filter((el: any) => el.title == baseChars.categorysId)[0].categoryId,
             specifications: productCard,
-            stockNumber: Number(baseChars.stockNumber),
+            stockInfo: baseChars.stockInfo,
         }
         console.log(newBaseChars);
         for (let i = 0; i < filesOfChoosenPhotos!.length; i++) {
@@ -39,10 +43,11 @@ function MainForm() {
         for (let key in newBaseChars) {
             formData.append(key, newBaseChars[key]);
         }
+
         await axios.post("https://lady-shery-egorplat.amvera.io/product/addProduct", formData)
         .then((res) => {
             console.log(res);
-            window.location.reload();
+            //window.location.reload();
         })
         .catch((err) => {
             console.log(err);
@@ -72,7 +77,6 @@ function MainForm() {
             <div className="base__characteristics">
                 <input onChange={(e) => setBaseChars({...baseChars, articleNumber: e.target.value})} type = "text" placeholder='Артикул' />
                 <input onChange={(e) => setBaseChars({...baseChars, title: e.target.value})} type = "text" placeholder='Название' />
-                <input onChange={(e) => setBaseChars({...baseChars, stockNumber: e.target.value})} type = "text" placeholder='Количество на складе' />
                 <select onChange={(e) => setBaseChars({...baseChars, categorysId: e.target.value})}>
                     {categories?.map((el: any, index: number) => {
                         return (
@@ -81,6 +85,7 @@ function MainForm() {
                     })}
                 </select>
             </div>
+            <ChooseSizesModal changeBaseChars = {changeBaseChars} />
             <Characteristics uploadCharacteristics = {uploadCharacteristics} />
             <button className='upload__button' onClick={sendProdcutCard}>Загрузить товар в базу</button>
         </div>

@@ -33,16 +33,17 @@ function MainForm() {
             articleNumber: baseChars.articleNumber,
             title: baseChars.title,
             categorysId: categories.filter((el: any) => el.title == baseChars.categorysId)[0].categoryId,
-            specifications: productCard,
-            stockInfo: baseChars.stockInfo,
+            //specifications: productCard,
+            //stockInfo: baseChars.stockInfo,
         }
-        console.log(newBaseChars);
         for (let i = 0; i < filesOfChoosenPhotos!.length; i++) {
             formData.append(`img` + `${i}`, filesOfChoosenPhotos![i]);
         }
         for (let key in newBaseChars) {
             formData.append(key, newBaseChars[key]);
         }
+        formData.append("stockInfo", JSON.stringify(baseChars.stockInfo));
+        formData.append("specifications", JSON.stringify(productCard));
 
         await axios.post("https://lady-shery-egorplat.amvera.io/product/addProduct", formData)
         .then((res) => {

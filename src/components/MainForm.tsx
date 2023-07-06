@@ -22,8 +22,8 @@ function MainForm() {
         unit: 'px',
         x: 0,
         y: 0,
-        width: 500,
-        height: 500
+        width: 1200,
+        height: 700
     });
     const [image, setImage] = useState();
     const refTest = useRef(null);

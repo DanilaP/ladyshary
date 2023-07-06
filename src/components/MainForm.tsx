@@ -1,25 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './MainForm.scss';
 import Characteristics from './Characteristisc/Characteristics';
 import { CharacteristicType, StockInfo } from './Interfaces';
 import axios from 'axios';
 import ChooseSizesModal from './ChooseSizesModal/chooseSizeModal';
+import 'react-image-crop/dist/ReactCrop.css';
+import ReactCrop, { type Crop } from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css'
+import { getCroppedImg, inputFileImageToBase64 } from './Cropper/cropFunctions';
 
 function MainForm() {
     const [choosenPhotos, setChoosenPhotos] = useState<string[]>([]);
     const [productCard, setProductCard] = useState<CharacteristicType[]>([]);
     const [baseChars, setBaseChars] = useState<any>({categorysId: "Новинки"});
     const [categories, setCategories] = useState<any>();
-    const [filesOfChoosenPhotos, setFilesOfChoosenPhotos] = useState<FileList | null>();
+    const [filesOfChoosenPhotos, setFilesOfChoosenPhotos] = useState<any[]>([]);
+    
+    //cropper States
+    const [isCrop, setIsCrop] = useState<boolean>(false);
+    const [crop, setCrop] = useState<Crop>({
+        unit: 'px',
+        x: 0,
+        y: 0,
+        width: 500,
+        height: 500
+    });
+    const [image, setImage] = useState();
+    const refTest = useRef(null);
 
-    const choosePhotos = (photos: FileList | null) => {
-        let imagesURL: string[] = [];
-        for (let i = 0; i < photos!.length; i++) {
-            let image = URL.createObjectURL(photos![i]);
-            imagesURL = [...imagesURL, image];
+    const handleAddImage = (element: any) => {
+        console.log(element.target.files[0]);
+        if (element.target.files && element.target.files[0]) {
+            let reader = new FileReader();
+            reader.onload = (e: any) => {
+                setImage(() => e.target.result);
+                setIsCrop(true);
+            };
+            reader.readAsDataURL(element.target.files[0]);
         }
-        setFilesOfChoosenPhotos(photos);
-        setChoosenPhotos(imagesURL);
+    };
+    const safePhoto = async () => {
+        const croppedImg = await getCroppedImg(refTest.current, crop, 'cropped.jpeg');
+        const file = await new File([croppedImg], "cropped.jpeg");
+        setFilesOfChoosenPhotos([...filesOfChoosenPhotos, file]);
+        setIsCrop(false);
     }
     const uploadCharacteristics = (characteristics: CharacteristicType[]) => {
         setProductCard(characteristics);
@@ -33,12 +57,11 @@ function MainForm() {
             articleNumber: baseChars.articleNumber,
             title: baseChars.title,
             categorysId: categories.filter((el: any) => el.title == baseChars.categorysId)[0].categoryId,
-            //specifications: productCard,
-            //stockInfo: baseChars.stockInfo,
         }
-        for (let i = 0; i < filesOfChoosenPhotos!.length; i++) {
-            formData.append(`img` + `${i}`, filesOfChoosenPhotos![i]);
+        for (let i = 0; i < filesOfChoosenPhotos.length; i++) {
+            formData.append("img" + `${i}`, filesOfChoosenPhotos[i]);
         }
+        console.log(filesOfChoosenPhotos);
         for (let key in newBaseChars) {
             formData.append(key, newBaseChars[key]);
         }
@@ -48,7 +71,7 @@ function MainForm() {
         await axios.post("https://lady-shery-egorplat.amvera.io/product/addProduct", formData)
         .then((res) => {
             console.log(res);
-            //window.location.reload();
+            window.location.reload();
         })
         .catch((err) => {
             console.log(err);
@@ -65,7 +88,18 @@ function MainForm() {
     }, [])
     return (
         <div className="main__form">
-            <input onChange={(e) => choosePhotos(e.target.files)} type = "file" accept="image/gif, image/jpeg, image/png" multiple />
+            <input type="file" onChange={handleAddImage} />
+            { isCrop ? 
+                <div className='cropper'>
+                    <div className='main__content'>
+                        <ReactCrop crop={crop} onChange={setCrop} minWidth={300} minHeight={465} maxWidth={300}   maxHeight={465}>
+                            <img src={image} ref={refTest} />
+                        </ReactCrop>
+                        <button onClick={safePhoto}>Сохранить фото</button>
+                    </div>
+                </div>
+                : null
+            }
             <div className="photos">
                 {choosenPhotos?.map((el, index) => {
                     return (

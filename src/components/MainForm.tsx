@@ -22,8 +22,8 @@ function MainForm() {
         unit: 'px',
         x: 0,
         y: 0,
-        width: 1200,
-        height: 700
+        width: 300,
+        height: 465
     });
     const [image, setImage] = useState();
     const refTest = useRef(null);
@@ -71,7 +71,7 @@ function MainForm() {
         await axios.post("https://lady-shery-egorplat.amvera.io/product/addProduct", formData)
         .then((res) => {
             console.log(res);
-            window.location.reload();
+            //window.location.reload();
         })
         .catch((err) => {
             console.log(err);
@@ -92,7 +92,7 @@ function MainForm() {
             { isCrop ? 
                 <div className='cropper'>
                     <div className='main__content'>
-                        <ReactCrop crop={crop} onChange={setCrop} minWidth={300} minHeight={465} maxWidth={300}   maxHeight={465}>
+                        <ReactCrop crop={crop} onChange={setCrop} minWidth={300} minHeight={465} maxWidth={300}  maxHeight={465}>
                             <img src={image} ref={refTest} />
                         </ReactCrop>
                         <button onClick={safePhoto}>Сохранить фото</button>

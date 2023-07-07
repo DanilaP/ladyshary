@@ -20,6 +20,7 @@
         box-sizing: border-box;
         padding: 20px;
         overflow-y: scroll;
+        overflow-x: hidden;
 
         & .size {
             display: flex;
@@ -27,6 +28,16 @@
         }
         & input {
             width: 170px;
+        }
+    }
+    & .delete__button {
+        font-size: 30px;
+        color: red;
+        margin-top: -9px;
+        transform: scaleY(0.8);
+
+        &:hover {
+            cursor: pointer;
         }
     }
 }

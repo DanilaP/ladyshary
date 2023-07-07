@@ -17,6 +17,10 @@ function ChooseSizesModal(props: {changeBaseChars: Function}) {
         }
         setStockInfo(newStockInfo);
     }
+    const deleteSize = (indexOfElement: number) => {
+        let newSizes = stockInfo.filter((el, index) => index !== indexOfElement);
+        setStockInfo(newSizes);
+    }
     useEffect(() => {
         props.changeBaseChars(stockInfo);
     }, [stockInfo])
@@ -30,6 +34,7 @@ function ChooseSizesModal(props: {changeBaseChars: Function}) {
                         <div key={index} className='size'>
                             <input onChange={(e) => changeStockInfo(index, e.target.value, 0)} placeholder='Размер' />
                             <input onChange={(e) => changeStockInfo(index, "", Number(e.target.value))} placeholder='Количество товара' />
+                            <div onClick={() => deleteSize(index)} className='delete__button'>x</div>
                         </div>
                     )
                 })}

@@ -91,11 +91,13 @@ function MainForm() {
             <input type="file" onChange={handleAddImage} />
             { isCrop ? 
                 <div className='cropper'>
-                    <div className='main__content'>
-                        <ReactCrop crop={crop} onChange={setCrop} minWidth={300} minHeight={465} maxWidth={300}  maxHeight={465}>
-                            <img src={image} ref={refTest} />
-                        </ReactCrop>
-                        <button onClick={safePhoto}>Сохранить фото</button>
+                    <div className="cropper__content">
+                        <div className='main__content'>
+                            <ReactCrop crop={crop} onChange={setCrop} minWidth={300} minHeight={465} maxWidth={300}  maxHeight={465}>
+                                <img src={image} ref={refTest} />
+                            </ReactCrop>
+                            <button onClick={safePhoto}>Сохранить фото</button>
+                        </div>
                     </div>
                 </div>
                 : null

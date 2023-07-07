@@ -6,7 +6,7 @@
     background-color: rgba(0, 0, 0, 0.537);
     backdrop-filter: blur(15px);
     min-height: 100vh;
-    
+
     & h1 {
         color: white;
     }

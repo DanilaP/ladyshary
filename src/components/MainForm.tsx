@@ -10,7 +10,7 @@ import 'react-image-crop/dist/ReactCrop.css'
 import { getCroppedImg, inputFileImageToBase64 } from './Cropper/cropFunctions';
 
 function MainForm() {
-    const [choosenPhotos, setChoosenPhotos] = useState<string[]>([]);
+    const [choosenPhotos, setChoosenPhotos] = useState<any[]>([]);
     const [productCard, setProductCard] = useState<CharacteristicType[]>([]);
     const [baseChars, setBaseChars] = useState<any>({categorysId: "Новинки"});
     const [categories, setCategories] = useState<any>();
@@ -43,6 +43,13 @@ function MainForm() {
         const croppedImg = await getCroppedImg(refTest.current, crop, 'cropped.jpeg');
         const file = await new File([croppedImg], "cropped.jpeg");
         setFilesOfChoosenPhotos([...filesOfChoosenPhotos, file]);
+
+        let fr = new FileReader();
+        fr.onload = function () {
+            setChoosenPhotos([...choosenPhotos, fr.result])
+        }
+        fr.readAsDataURL(file);
+
         setIsCrop(false);
     }
     const uploadCharacteristics = (characteristics: CharacteristicType[]) => {
@@ -97,7 +104,7 @@ function MainForm() {
                                 <img src={image} ref={refTest} />
                             </ReactCrop>
                             <button onClick={safePhoto}>Сохранить фото</button>
-                        </div>
+                        </div> 
                     </div>
                 </div>
                 : null
@@ -106,7 +113,7 @@ function MainForm() {
                 {choosenPhotos?.map((el, index) => {
                     return (
                         <div key={index} className="photo">
-                            <img width={"100px"} height={"100px"} src = {el} />
+                            <img width={"100px"} height={"150px"} src = {el} />
                         </div>
                     )
                 })}
